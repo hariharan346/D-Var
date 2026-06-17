@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: payment-config
+  namespace: default
+data:
+  DB_HOST: "postgres"
+  DB_PORT: "5442" # (5432 )Intentionally incorrect port to simulate connection failure (should be 5432)
+  DB_USER: "postgres"
