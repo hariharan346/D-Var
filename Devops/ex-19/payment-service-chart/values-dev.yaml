@@ -1,0 +1,21 @@
+# Development environment overrides
+replicaCount: 1
+
+resources:
+  requests:
+    cpu: 50m
+    memory: 64Mi
+  limits:
+    cpu: 100m
+    memory: 128Mi
+
+ingress:
+  enabled: false
+
+autoscaling:
+  enabled: false
+
+configData:
+  APP_ENV: "dev"
+  PAYMENT_PROVIDER: "mock"
+  LOG_LEVEL: "debug"

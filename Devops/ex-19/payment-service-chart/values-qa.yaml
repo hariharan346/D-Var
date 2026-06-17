@@ -1,0 +1,29 @@
+# QA environment overrides
+replicaCount: 2
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 250m
+    memory: 256Mi
+
+ingress:
+  enabled: true
+  className: "nginx"
+  annotations:
+    kubernetes.io/ingress.class: nginx
+  hosts:
+    - host: qa-payment.example.com
+      paths:
+        - path: /
+          pathType: Prefix
+
+autoscaling:
+  enabled: false
+
+configData:
+  APP_ENV: "qa"
+  PAYMENT_PROVIDER: "stripe-sandbox"
+  LOG_LEVEL: "info"
