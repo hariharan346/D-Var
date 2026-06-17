@@ -10,7 +10,7 @@ spec:
     targetRevision: main
     path: Devops/exercise-3-argocd/manifests
     directory:
-      exclude: 'application*.yaml,git-server.yaml'
+      exclude: '{application*.yaml,git-server.yaml}'
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: default
