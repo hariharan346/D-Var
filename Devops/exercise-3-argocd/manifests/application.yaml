@@ -1,0 +1,18 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: payment-service-app
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: 'git://git-service.default.svc.cluster.local/repo.git'
+    targetRevision: HEAD
+    path: .
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: default
+  syncPolicy:
+    # AutoSync is disabled to allow us to simulate configuration drift
+    # manually, creating OutOfSync states.
+    automated: null

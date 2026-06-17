@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: payment-service-app
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: 'git://git-service.default.svc.cluster.local/repo.git'
+    targetRevision: HEAD
+    path: .
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: default
+  syncPolicy:
+    automated:
+      prune: true     # Automatically delete resources that are no longer defined in Git
+      selfHeal: true  # Automatically sync cluster back to Git desired state if drift occurs
+    syncOptions:
+    - CreateNamespace=true # Create target namespace if it doesn't exist

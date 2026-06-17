@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: git-server
+  namespace: default
+  labels:
+    app: git-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: git-server
+  template:
+    metadata:
+      labels:
+        app: git-server
+    spec:
+      containers:
+      - name: git-server
+        image: alpine/git:v2.43.0
+        command: ["sh", "-c"]
+        args:
+        - |
+          echo "Initializing bare repository..."
+          mkdir -p /git/repo.git
+          cd /git/repo.git
+          git init --bare --shared
+          git config --global user.email "git@server.com"
+          git config --global user.name "Git Server"
+          echo "Starting Git Daemon on port 9418..."
+          git daemon --verbose --export-all --enable=receive-pack --base-path=/git /git
+        ports:
+        - containerPort: 9418
+          name: git
+        volumeMounts:
+        - name: git-storage
+          mountPath: /git
+        resources:
+          limits:
+            cpu: "200m"
+            memory: "128Mi"
+          requests:
+            cpu: "50m"
+            memory: "64Mi"
+      volumes:
+      - name: git-storage
+        emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: git-service
+  namespace: default
+  labels:
+    app: git-server
+spec:
+  ports:
+  - port: 9418
+    targetPort: 9418
+    protocol: TCP
+    name: git
+  selector:
+    app: git-server
+  type: ClusterIP
