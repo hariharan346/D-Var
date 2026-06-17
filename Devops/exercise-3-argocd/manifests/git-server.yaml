@@ -17,10 +17,12 @@ spec:
     spec:
       containers:
       - name: git-server
-        image: alpine/git:v2.43.0
+        image: alpine:3.19
         command: ["sh", "-c"]
         args:
         - |
+          echo "Installing git and git-daemon..."
+          apk update && apk add --no-cache git git-daemon
           echo "Initializing bare repository..."
           mkdir -p /git/repo.git
           cd /git/repo.git
