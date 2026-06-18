@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+  namespace: exercise-12
+data:
+  ORDER_SERVICE_URL: "http://order-service:8000"
+  PAYMENT_SERVICE_URL: "http://payment-service:8000"
+  DB_HOST: "postgres"
+  DB_PORT: "5432"
+  DB_NAME: "payments"
+  MAX_RETRIES: "10"
+  RETRY_DELAY: "0.05"

@@ -1,0 +1,62 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: k6-script
+  namespace: exercise-12
+data:
+  k6.js: |
+    import http from 'k6/http';
+    import { sleep } from 'k6';
+
+    export const options = {
+      vus: 40,
+      duration: '15m',
+    };
+
+    export default function () {
+      const url = 'http://frontend.exercise-12.svc.cluster.local/order';
+      const payload = JSON.stringify({
+        order_id: `ord-${Math.floor(Math.random() * 1000000)}`,
+        amount: parseFloat((Math.random() * 500).toFixed(2))
+      });
+
+      const params = {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      };
+
+      http.post(url, payload, params);
+      sleep(0.01);
+    }
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: load-generator
+  namespace: exercise-12
+  labels:
+    app: load-generator
+spec:
+  replicas: 0 # Start with 0. Traffic generation script will scale it to 1.
+  selector:
+    matchLabels:
+      app: load-generator
+  template:
+    metadata:
+      labels:
+        app: load-generator
+    spec:
+      nodeSelector:
+        kubernetes.io/hostname: k3d-ex12-agent-0
+      containers:
+      - name: k6
+        image: grafana/k6:0.45.0
+        command: ["k6", "run", "/var/k6/k6.js"]
+        volumeMounts:
+        - name: script-vol
+          mountPath: /var/k6
+      volumes:
+      - name: script-vol
+        configMap:
+          name: k6-script
