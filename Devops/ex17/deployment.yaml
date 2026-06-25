@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dynamodb-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dynamodb-app
+  template:
+    metadata:
+      labels:
+        app: dynamodb-app
+    spec:
+      serviceAccountName: dynamodb-sa
+      containers:
+      - name: app
+        image: 660201001952.dkr.ecr.ap-south-1.amazonaws.com/dynamodb-irsa:latest
+        imagePullPolicy: Never
+        env:
+        - name: AWS_ACCESS_KEY_ID
+          valueFrom:
+            secretKeyRef:
+              name: aws-credentials
+              key: AWS_ACCESS_KEY_ID
+        - name: AWS_SECRET_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: aws-credentials
+              key: AWS_SECRET_ACCESS_KEY
+        - name: AWS_DEFAULT_REGION
+          value: ap-south-1

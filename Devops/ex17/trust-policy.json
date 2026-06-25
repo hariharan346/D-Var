@@ -1,0 +1,17 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Federated": "arn:aws:iam::660201001952:oidc-provider/oidc.eks.ap-south-1.amazonaws.com/id/OIDC_ID"
+      },
+      "Action": "sts:AssumeRoleWithWebIdentity",
+      "Condition": {
+        "StringEquals": {
+          "oidc.eks.ap-south-1.amazonaws.com/id/OIDC_ID:sub": "system:serviceaccount:default:dynamodb-sa"
+        }
+      }
+    }
+  ]
+}
